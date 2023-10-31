@@ -15,7 +15,7 @@ jobs:
 
       - name: Change Directory
         run: |
-          cd client
+          cd ./client
 
       - name: remove prev environment file
         run: |
