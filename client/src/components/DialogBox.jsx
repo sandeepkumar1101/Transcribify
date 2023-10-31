@@ -1,0 +1,282 @@
+import React, { useState } from "react";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import Switch from "@mui/material/Switch";
+import { Box, Typography } from "@mui/material";
+import { Close, Label } from "@mui/icons-material";
+import Dropzone from "react-dropzone";
+import FlexBetween from "./FlexBetween";
+import { ReactComponent as UploadIcon } from "assets/SidebarIcon/Upload.svg";
+// {
+//   open, onClose, onSubmit;
+// }
+const DialogBox = ({ handleClose, open }) => {
+  const [transcriptionLanguage, setTranscriptionLanguage] = useState("");
+  const [audioFile, setAudioFile] = useState(null);
+  const [importLink, setImportLink] = useState("");
+  const [speakerIdentification, setSpeakerIdentification] = useState(false);
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setAudioFile(file);
+  };
+
+  const handleSubmit = () => {
+    const formData = {
+      transcriptionLanguage,
+      audioFile,
+      importLink,
+      speakerIdentification,
+    };
+    // onSubmit(formData);
+    // onClose();
+  };
+
+  return (
+    <Dialog open={open} maxWidth="md" fullWidth={true} onClose={handleClose}>
+      <DialogTitle
+        sx={{
+          padding: "2rem",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Typography
+            sx={{
+              fontWeight: "600",
+              fontSize: "24px",
+              lineHeight: "34px",
+              color: "#00000",
+            }}
+          >
+            Transcribe File
+          </Typography>
+          <Button
+            onClick={() => {
+              handleClose();
+            }}
+          >
+            <Close />
+          </Button>
+        </Box>
+      </DialogTitle>
+      <DialogContent
+        sx={{
+          padding: "2rem",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "2rem",
+            justifyContent: "center",
+          }}
+        >
+          <FormControl fullWidth>
+            <label
+              style={{
+                fontWeight: "500",
+                fontSize: "14px",
+                marginBottom: "8px",
+              }}
+              htmlFor="transcription-language"
+            >
+              Transcription Language
+            </label>
+            <Select
+              value={transcriptionLanguage}
+              onChange={(e) => setTranscriptionLanguage(e.target.value)}
+            >
+              <MenuItem value="Hindi">Hindi</MenuItem>
+              <MenuItem value="English">English</MenuItem>
+            </Select>
+          </FormControl>
+
+          <Dropzone
+            acceptedFiles={[".csv"]}
+            multiple={false}
+            onDrop={(acceptedFiles) => {
+              if (acceptedFiles[0].type === "text/csv") {
+                //   setFieldValue("csv", acceptedFiles[0]);
+              } else {
+                acceptedFiles = [];
+                //   toast.error("Please upload csv file only");
+              }
+            }}
+          >
+            {({ getRootProps, getInputProps }) => (
+              <Box
+                {...getRootProps()}
+                width="100%"
+                padding="10px"
+                sx={{
+                  "&:hover": { cursor: "pointer" },
+                  border: "1px solid #D0D5DD",
+                  borderRadius: "8px",
+                  padding: "40px, 16px, 40px, 16px",
+                }}
+              >
+                <input {...getInputProps()} />
+                {!false ? (
+                  <Box
+                    sx={{
+                      padding: "10px",
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                      gap: "50px",
+                    }}
+                  >
+                    {/* <Close /> */}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        width: "100%",
+                      }}
+                    >
+                      <FlexBetween width="100%">
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center",
+
+                            gap: "10px",
+                          }}
+                        >
+                          <UploadIcon />
+                          <Typography>
+                            <span
+                              style={{
+                                color: "#0048AD",
+                                fontWeight: "600",
+                                fontSize: "14px",
+                              }}
+                            >
+                              Click to Upload
+                            </span>
+                            <span
+                              style={{
+                                color: "#475367",
+                                fontWeight: "400",
+                                fontSize: "14px",
+                              }}
+                            >
+                              {" "}
+                              or drag and drop
+                            </span>
+                          </Typography>
+                          <Typography
+                            sx={{
+                              fontWeight: "400",
+                              fontSize: "12px",
+                              lineHeight: "18px",
+                              textAlign: "center",
+                              padding: "0px 100px",
+                            }}
+                          >
+                            The maximum file size is 1GB for audio and 10GB for
+                            videos. Supported formats: mp3, mp4, wav, caf, aiff,
+                            avi, rmvb, flv, m4a, mov, wmv, wma
+                          </Typography>
+                        </Box>
+                      </FlexBetween>
+                    </Box>
+                  </Box>
+                ) : (
+                  <FlexBetween>
+                    <Typography>{"dile"}</Typography>
+                  </FlexBetween>
+                )}
+              </Box>
+            )}
+          </Dropzone>
+
+          <FormControl>
+            <label
+              style={{
+                fontSize: "14px",
+                fontWeight: "500",
+                lineHeight: "21px",
+                marginBottom: "8px",
+              }}
+              htmlFor=""
+            >
+              Import from Link
+            </label>
+            <TextField
+              placeholder="Pase a Dropbox, Google Drive, or Youtube URL here"
+              fullWidth
+              value={importLink}
+              onChange={(e) => setImportLink(e.target.value)}
+            />
+          </FormControl>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              gap: "24px",
+            }}
+          >
+            <input
+              type="checkbox"
+              style={{
+                transform: "scale(1.5)",
+              }}
+              checked={speakerIdentification}
+              onChange={() => setSpeakerIdentification(!speakerIdentification)}
+            />
+            <InputLabel>Speaker Identification</InputLabel>
+          </Box>
+        </Box>
+      </DialogContent>
+      <DialogActions
+        sx={{
+          padding: "2rem",
+        }}
+      >
+        <Button
+          sx={{
+            width: "100%",
+            backgroundColor: "#0048AD",
+            color: "#ffff",
+            textTransform: "none",
+            height: "55px",
+            fontSize: "16px",
+            borderRadius: "6px",
+            fontWeight: "600",
+            padding: "16px, 24px, 16px, 24px",
+            "&:hover": {
+              backgroundColor: "#0048AD",
+            },
+          }}
+          onClick={handleSubmit}
+        >
+          Submit
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+export default DialogBox;

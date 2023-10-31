@@ -1,0 +1,34 @@
+name: Transcriber
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    environment: productions
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: remove prev environment file
+        run: |
+          rm .env || true
+
+      - name: Create .env file
+          echo "MONGO_URI=${{ secrets.MONGODB }}" >> .env
+
+      - name: remove previous container
+        run: |
+          docker stop transcriber || true
+          docker rm transcriber || true
+          docker image remove transcriber:latest || true
+      - name: Build and push Docker images
+        run: |
+          docker build -t transcriber:latest . --no-cache
+
+      - name: Deploy Docker container
+        run: |
+          docker run -d --name transcriber -p 3040:3000 transcriber:latest
