@@ -13,10 +13,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Change Directory
-        run: |
-          cd ./client
-
       - name: remove prev environment file
         run: |
           rm .env || true

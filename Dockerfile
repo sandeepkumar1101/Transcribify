@@ -4,13 +4,13 @@ FROM node:18-alpine
 WORKDIR /app
 
 # Copy the package.json and package-lock.json files to the container
-COPY package*.json ./
+COPY ./client/package*.json ./
 
 # Install dependencies
 RUN npm install
 
 # Copy the rest of the application code to the container
-COPY . .
+COPY ./client .
 
 # Build the production version of the application
 RUN npm run build
