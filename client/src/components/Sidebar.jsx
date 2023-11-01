@@ -25,7 +25,7 @@ import { ReactComponent as IntegrationIcon } from "assets/SidebarIcon/share.svg"
 import { ReactComponent as TrashIcon } from "assets/SidebarIcon/bin.svg";
 import { ReactComponent as SettingIcon } from "assets/SidebarIcon/settings.svg";
 import { ReactComponent as HelpIcon } from "assets/SidebarIcon/question-circle.svg";
-
+import { ToastContainer } from "react-toastify";
 const navItems = [
   {
     text: "Home",
@@ -87,6 +87,7 @@ const Sidebar = ({
       }}
       component="nav"
     >
+      <ToastContainer />
       {isSidebarOpen && (
         <Drawer
           open={isSidebarOpen}

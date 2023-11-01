@@ -10,38 +10,82 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Switch from "@mui/material/Switch";
-import { Box, Typography } from "@mui/material";
-import { Close, Label } from "@mui/icons-material";
+import {
+  Box,
+  CircularProgress,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
+import { Circle, CircleRounded, Close, Label } from "@mui/icons-material";
 import Dropzone from "react-dropzone";
+import { toast } from "react-toastify";
 import FlexBetween from "./FlexBetween";
 import { ReactComponent as UploadIcon } from "assets/SidebarIcon/Upload.svg";
 // {
 //   open, onClose, onSubmit;
 // }
 const DialogBox = ({ handleClose, open }) => {
-  const [transcriptionLanguage, setTranscriptionLanguage] = useState("");
+  const [transcriptionLanguage, setTranscriptionLanguage] = useState("english");
   const [audioFile, setAudioFile] = useState(null);
   const [importLink, setImportLink] = useState("");
   const [speakerIdentification, setSpeakerIdentification] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [values, setFormValues] = useState("");
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    setAudioFile(file);
+  const setFieldValue = (field, value) => {
+    if (field === "mp3") {
+      // get the csv file name and their data and conver that data into array of object with total no of rows
+      // open the
+      setFormValues(value.name);
+      setAudioFile(value);
+    }
   };
 
-  const handleSubmit = () => {
-    const formData = {
-      transcriptionLanguage,
-      audioFile,
-      importLink,
-      speakerIdentification,
-    };
-    // onSubmit(formData);
-    // onClose();
+  const isOnMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
+  console.log(isOnMobile);
+  const handleSubmit = async () => {
+    // const formData = {
+    //   transcriptionLanguage,
+    //   audioFile,
+    //   importLink,
+    //   speakerIdentification,
+    // };
+
+    const formData = new FormData();
+    setLoading(true);
+    formData.append("language", transcriptionLanguage);
+    formData.append("audio", audioFile);
+    formData.append("file_name", values);
+    formData.append("file_url", importLink);
+    formData.append("speaker_identification", speakerIdentification);
+    formData.append("username", "sandeep1101");
+    try {
+      const uploadFile = await fetch("http://localhost:5000/audio/upload", {
+        method: "POST",
+        body: formData,
+      }).then((res) => res.json());
+      toast.success("File Uploaded Successfully");
+    } catch (err) {
+      toast.error("Something went wrong");
+    }
+
+    console.log(formData, "dela");
+    setAudioFile(null);
+    setImportLink("");
+    setSpeakerIdentification(false);
+    setTranscriptionLanguage("english");
+    setFormValues("");
+    setLoading(false);
+    handleClose();
   };
 
   return (
-    <Dialog open={open} maxWidth="md" fullWidth={true} onClose={handleClose}>
+    <Dialog
+      open={open}
+      maxWidth={isOnMobile ? "xs" : "md"}
+      fullWidth={true}
+      onClose={handleClose}
+    >
       <DialogTitle
         sx={{
           padding: "2rem",
@@ -101,17 +145,18 @@ const DialogBox = ({ handleClose, open }) => {
               value={transcriptionLanguage}
               onChange={(e) => setTranscriptionLanguage(e.target.value)}
             >
-              <MenuItem value="Hindi">Hindi</MenuItem>
-              <MenuItem value="English">English</MenuItem>
+              <MenuItem value="english">English</MenuItem>
+              <MenuItem value="hindi">Hindi</MenuItem>
             </Select>
           </FormControl>
 
           <Dropzone
-            acceptedFiles={[".csv"]}
+            acceptedFiles={[".mp3"]}
             multiple={false}
             onDrop={(acceptedFiles) => {
-              if (acceptedFiles[0].type === "text/csv") {
-                //   setFieldValue("csv", acceptedFiles[0]);
+              console.log(acceptedFiles);
+              if (acceptedFiles[0].type.includes("audio")) {
+                setFieldValue("mp3", acceptedFiles[0]);
               } else {
                 acceptedFiles = [];
                 //   toast.error("Please upload csv file only");
@@ -131,7 +176,7 @@ const DialogBox = ({ handleClose, open }) => {
                 }}
               >
                 <input {...getInputProps()} />
-                {!false ? (
+                {!values ? (
                   <Box
                     sx={{
                       padding: "10px",
@@ -203,7 +248,15 @@ const DialogBox = ({ handleClose, open }) => {
                   </Box>
                 ) : (
                   <FlexBetween>
-                    <Typography>{"dile"}</Typography>
+                    <Typography
+                      sx={{
+                        fontWeight: "400",
+                        padding: "10px",
+                        fontSize: "14px",
+                      }}
+                    >
+                      {values}
+                    </Typography>
                   </FlexBetween>
                 )}
               </Box>
@@ -272,7 +325,16 @@ const DialogBox = ({ handleClose, open }) => {
           }}
           onClick={handleSubmit}
         >
-          Submit
+          {loading ? (
+            <CircularProgress
+              sx={{
+                color: "black",
+              }}
+            />
+          ) : (
+            "Submit"
+          )}
+          {/* loaing icon */}
         </Button>
       </DialogActions>
     </Dialog>

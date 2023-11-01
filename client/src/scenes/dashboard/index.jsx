@@ -21,11 +21,13 @@ import { ReactComponent as TextIcon } from "assets/SidebarIcon/text.svg";
 import BoxInfo from "components/BoxInfo";
 import DataGridCustomToolbar from "components/DataGridCustomToolbarD";
 import { ReactComponent as CheckBoxIcon } from "assets/SidebarIcon/Checkbox.svg";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import { DataGrid } from "@mui/x-data-grid";
 import { MenuItem } from "react-pro-sidebar";
 import { Close } from "@mui/icons-material";
 import DialogBox from "components/DialogBox";
+import { toast } from "react-toastify";
 
 const DashBoardStatus = [
   {
@@ -215,7 +217,7 @@ const Dashboard = () => {
           getRowId={(row) => row.id}
           rows={data?.data || []}
           columns={isOnMobile ? columnSmall : columns}
-          pageSize={12}
+          pageSize={5}
           // components={{ Toolbar: DataGridCustomToolbar }}
         ></DataGrid>
       </Box>
@@ -231,7 +233,7 @@ const data = {
     {
       id: "1",
       is_checked: 0,
-      name: "Sandeep Kumar",
+      name: "Maker's Lab",
       type: "Audio",
       duration: 20,
       created_at: "12/12/2021",
@@ -241,22 +243,52 @@ const data = {
     {
       id: "2",
       is_checked: 1,
-      name: "Sandeep Kumar",
-      type: "Audio",
-      duration: 20,
-      created_at: "12/12/2021",
-      updated_at: "12/12/2021",
+      name: "Top 10 Movies",
+      type: "Video",
+      duration: 10,
+      created_at: "12/12/2022",
+      updated_at: "12/12/2022",
       action: "Processing",
     },
     {
       id: "3",
-      name: "Sandeep Kumar",
+      name: "Good vs Evil",
       type: "Audio",
-      duration: 20,
+      duration: 160,
       is_checked: 1,
-      created_at: "12/12/2021",
-      updated_at: "12/12/2021",
-      action: "Proccessing",
+      created_at: "12/10/2023",
+      updated_at: "12/10/2023",
+      action: "Processing",
+    },
+    {
+      id: "4",
+      name: "Life of Pi Essay",
+      type: "Audio",
+      duration: 5,
+      is_checked: 0,
+      created_at: "12/10/2023",
+      updated_at: "12/10/2023",
+      action: "Transcribed",
+    },
+    {
+      id: "5",
+      name: "Scene 1 of BreakMan",
+      type: "Audio",
+      duration: 160,
+      is_checked: 1,
+      created_at: "12/10/2023",
+      updated_at: "12/10/2023",
+      action: "Processing",
+    },
+    {
+      id: "3",
+      name: "Good vs Evil",
+      type: "Audio",
+      duration: 160,
+      is_checked: 1,
+      created_at: "12/10/2023",
+      updated_at: "12/10/2023",
+      action: "Processing",
     },
   ],
   created_at: "2023-01-25T06:44:07.820Z",
@@ -362,5 +394,20 @@ const columns = [
     field: "action",
     headerName: "Action",
     flex: 1,
+    renderCell: (params) => {
+      if (params.row.action === "Transcribed") {
+        return <Button>Download</Button>;
+      }
+      return (
+        <Button
+          sx={{
+            textAlign: "center",
+            color: "green",
+          }}
+        >
+          {params.row.action}
+        </Button>
+      );
+    },
   },
 ];
