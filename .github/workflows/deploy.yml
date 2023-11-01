@@ -15,11 +15,11 @@ jobs:
 
       - name: remove prev environment file
         run: |
-          rm .env || true
+          rm ./client/.env || true
 
       - name: Create .env file
         run: |
-          echo "MONGO_URI=${{ secrets.MONGODB }}" >> .env
+          echo "MONGO_URI=${{ secrets.MONGODB }}" >> ./client/.env
 
       - name: remove previous container
         run: |
