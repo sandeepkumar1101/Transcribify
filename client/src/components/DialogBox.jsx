@@ -60,10 +60,13 @@ const DialogBox = ({ handleClose, open }) => {
     formData.append("speaker_identification", speakerIdentification);
     formData.append("username", "sandeep1101");
     try {
-      const uploadFile = await fetch("http://localhost:5000/audio/upload", {
-        method: "POST",
-        body: formData,
-      }).then((res) => res.json());
+      const uploadFile = await fetch(
+        "https://transcribifyserver.futuregeek.tech/audio/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      ).then((res) => res.json());
       toast.success("File Uploaded Successfully");
     } catch (err) {
       toast.error("Something went wrong");

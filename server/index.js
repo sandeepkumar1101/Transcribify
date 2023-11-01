@@ -39,14 +39,14 @@ app.post("/audio/upload", upload.single("audio"), audioProcessing);
 
 const PORT = 5000;
 
-// mongoose
-//   .connect(process.env.MONGO_URL, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//     // database <cluster0>
-//     dbName: "transcribify",
-//   })
-//   .then(() => {
-app.listen(PORT, () => console.log(`Server running on port: ${PORT}`));
-// })
-// .catch((error) => console.log(`${error} did not connect`));
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    // database <cluster0>
+    dbName: "transcribify",
+  })
+  .then(() => {
+    app.listen(PORT, () => console.log(`Server running on port: ${PORT}`));
+  })
+  .catch((error) => console.log(`${error} did not connect`));

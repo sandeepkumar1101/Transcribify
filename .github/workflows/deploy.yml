@@ -7,29 +7,41 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
-    environment: productions
+    environment: production
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: remove prev environment file
+      - name: remove previous client container
         run: |
-          rm ./client/.env || true
+          docker stop transcriber-client || true
+          docker rm transcriber-client || true
+          docker image remove transcriber-client:latest || true
 
-      - name: Create .env file
+      - name: Build and push Docker images for client
         run: |
-          echo "MONGO_URI=${{ secrets.MONGODB }}" >> ./client/.env
+          docker build -t transcriber-client:latest ./client --no-cache
 
-      - name: remove previous container
+      - name: Deploy Docker container for client
         run: |
-          docker stop transcriber || true
-          docker rm transcriber || true
-          docker image remove transcriber:latest || true
-      - name: Build and push Docker images
-        run: |
-          docker build -t transcriber:latest . --no-cache
+          docker run -d --name transcriber-client -p 3040:3000 transcriber-client:latest
 
-      - name: Deploy Docker container
+      - name: Create .env file for server
         run: |
-          docker run -d --name transcriber -p 3040:3000 transcriber:latest
+          rm ./server/.env || true
+          echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> ./server/.env
+
+      - name: remove previous server container
+        run: |
+          docker stop transcriber-server || true
+          docker rm transcriber-server || true
+          docker image remove transcriber-server:latest || true
+
+      - name: Build and push Docker images for server
+        run: |
+          docker build -t transcriber-server:latest ./server --no-cache
+
+      - name: Deploy Docker container for server
+        run: |
+          docker run -d --name transcriber-server -p 5049:5000 transcriber-server:latest
