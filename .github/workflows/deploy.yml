@@ -7,7 +7,7 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
-    environment: production
+    environment: productions
 
     steps:
       - name: Checkout repository

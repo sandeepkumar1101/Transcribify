@@ -162,7 +162,7 @@ const DialogBox = ({ handleClose, open }) => {
                 setFieldValue("mp3", acceptedFiles[0]);
               } else {
                 acceptedFiles = [];
-                //   toast.error("Please upload csv file only");
+                toast.error("Currently it supports only mp3");
               }
             }}
           >
